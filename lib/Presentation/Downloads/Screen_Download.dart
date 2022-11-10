@@ -19,7 +19,7 @@ class Screen_Download extends StatelessWidget {
         child: Scaffold(
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(50),
-        child: AppBarWidgets(title: 'Downloads'),
+        child: AppBarWidgets(title: 'Downloads', itIsHomePage: true),
       ),
       body: ListView.separated(
           padding: EdgeInsets.all(20),

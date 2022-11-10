@@ -6,9 +6,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
 
 class AppBarWidgets extends StatelessWidget {
-  const AppBarWidgets({Key? key, required this.title}) : super(key: key);
+  const AppBarWidgets({
+    Key? key,
+    required this.title,
+    required this.itIsHomePage,
+  }) : super(key: key);
   final String title;
-
+  final bool itIsHomePage;
   @override
   Widget build(BuildContext context) {
     final screenwidth = MediaQuery.of(context).size.width;
@@ -17,10 +21,12 @@ class AppBarWidgets extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Row(
         children: [
-          Text(
-            title,
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          ),
+          itIsHomePage
+              ? Text(
+                  title,
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                )
+              : Image(height: 50, image: AssetImage('assets/netflixlogo.png')),
           Spacer(),
           Icon(
             Icons.cast,
