@@ -4,7 +4,22 @@ import 'package:netflix_demo/Core/Colors/Colors.dart';
 import 'package:netflix_demo/Presentation/New&Hot/widgets/image_with_muteicon.dart';
 
 class ComingSoonWidget extends StatelessWidget {
-  const ComingSoonWidget({Key? key}) : super(key: key);
+  final String id;
+  final String month;
+  final String day;
+  final String posterPath;
+  final String movieName;
+  final String description;
+
+  const ComingSoonWidget(
+      {Key? key,
+      required this.id,
+      required this.month,
+      required this.day,
+      required this.posterPath,
+      required this.movieName,
+      required this.description})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,12 +33,12 @@ class ComingSoonWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
-                'FEB',
+                month,
                 style: TextStyle(
                     fontSize: 16, fontWeight: FontWeight.bold, color: Grey),
               ),
               Text(
-                '11',
+                day,
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
               )
             ],
@@ -36,15 +51,20 @@ class ComingSoonWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              ImageWithMuteIcon(),
+              ImageWithMuteIcon(url: posterPath),
               SizedBox(
                 height: 20,
               ),
               Row(
                 children: [
-                  Text(
-                    'TALL GIRL 2',
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Text(
+                      movieName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style:
+                          TextStyle(fontSize: 21, fontWeight: FontWeight.bold),
+                    ),
                   ),
                   SizedBox(
                     width: 40,
@@ -62,7 +82,7 @@ class ComingSoonWidget extends StatelessWidget {
               SizedBox(
                 height: 5,
               ),
-              Text('Coming on friday'),
+              Text('Coming on $day $month'),
               SizedBox(
                 height: 15,
               ),
@@ -84,14 +104,18 @@ class ComingSoonWidget extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                'Tall girls 2',
+                movieName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               SizedBox(
                 height: 10,
               ),
               Text(
-                'Landing the lead in the school musical is a dream come true for jodi,until the pressure sends her confidence--and her relationship--\ninto a tailspin.',
+                description,
+                maxLines: 5,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Grey),
               ),
             ],

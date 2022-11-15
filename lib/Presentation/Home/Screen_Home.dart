@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:netflix_demo/Application/home/home_bloc.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
 import 'package:netflix_demo/Core/constans.dart';
 
@@ -17,6 +19,9 @@ class ScreenHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenheight = MediaQuery.of(context).size.height;
     final ScreenWidth = MediaQuery.of(context).size.width;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<HomeBloc>(context).add(GetHomeScreenData());
+    });
     return SafeArea(
       child: Scaffold(
           body: ValueListenableBuilder(
@@ -35,15 +40,68 @@ class ScreenHome extends StatelessWidget {
           },
           child: Stack(
             children: [
-              ListView(
-                children: [
-                  Home_Background(screenheight: screenheight),
-                  const homeMainCard(description: 'Released in the past year'),
-                  homeMainCard(description: 'Trending Now'),
-                  NmberHomecard(),
-                  homeMainCard(description: 'Tens Dramas'),
-                  homeMainCard(description: 'South Indian Cenima')
-                ],
+              BlocBuilder<HomeBloc, HomeState>(
+                builder: (context, state) {
+                  if (state.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (state.hasError) {
+                    return const Center(
+                        child: Text(
+                      'Error While Getting Data',
+                      style: TextStyle(color: White),
+                    ));
+                  }
+                  //release Past year
+                  final _releasepastYear = state.pastYearMovieList.map((m) {
+                    return '$ImageAppendUrl${m.posterPath}';
+                  }).toList();
+
+                  _releasepastYear.shuffle();
+
+                  //tens drama
+                  final _drama = state.tenseDramasMovieList.map((m) {
+                    return '$ImageAppendUrl${m.posterPath}';
+                  }).toList();
+                  _drama.shuffle();
+
+                  //south indian
+                  final _southIndian = state.trendingMovieList.map((m) {
+                    return '$ImageAppendUrl${m.posterPath}';
+                  }).toList();
+                  _southIndian.shuffle();
+
+                  //trending
+                  final _trending = state.trendingMovieList.map((m) {
+                    return '$ImageAppendUrl${m.posterPath}';
+                  }).toList();
+                  _trending.shuffle();
+
+                  //top10 Tv
+                  final _top10 = state.trendingTVList.map((t) {
+                    return '$ImageAppendUrl${t.posterPath}';
+                  }).toList();
+
+                  return ListView(
+                    children: [
+                      Home_Background(
+                          screenheight: screenheight,
+                          backgroundimag:
+                              '$ImageAppendUrl${state.pastYearMovieList[2].posterPath}'),
+                      homeMainCard(
+                          description: 'Released in the past year',
+                          posterList: _releasepastYear),
+                      homeMainCard(
+                          description: 'Trending Now', posterList: _trending),
+                      NmberHomecard(posterpathlist: _top10.sublist(10)),
+                      homeMainCard(
+                          description: 'Tens Dramas', posterList: _drama),
+                      homeMainCard(
+                        description: 'South Indian Cenima',
+                        posterList: _southIndian,
+                      )
+                    ],
+                  );
+                },
               ),
               scrollDirections.value == true
                   ? AnimatedContainer(

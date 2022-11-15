@@ -4,9 +4,10 @@ import 'package:netflix_demo/Core/Colors/Colors.dart';
 import 'package:netflix_demo/Presentation/Home/widgets/costumsed_button.dart';
 
 class Home_Background extends StatelessWidget {
+  final String backgroundimag;
   const Home_Background({
     Key? key,
-    required this.screenheight,
+    required this.screenheight, required this.backgroundimag,
   }) : super(key: key);
 
   final double screenheight;
@@ -21,7 +22,7 @@ class Home_Background extends StatelessWidget {
           decoration: BoxDecoration(
               image: DecorationImage(
                   image: NetworkImage(
-                      'https://www.themoviedb.org/t/p/w300_and_h450_bestv2/kNU8gzCuoYuZr1hl36xAlCAxFwF.jpg'),
+                     backgroundimag),
                   fit: BoxFit.cover)),
         ),
         Positioned(
@@ -33,7 +34,7 @@ class Home_Background extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Icon_text(icon: Icons.add, label: 'My List',color: White),
+                Icon_text(icon: Icons.add, label: 'My List', color: White),
                 PlayButton(),
                 Icon_text(icon: Icons.info_outline, label: 'Info', color: White)
               ],

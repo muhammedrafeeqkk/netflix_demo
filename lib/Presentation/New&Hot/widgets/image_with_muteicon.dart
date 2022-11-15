@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
 
 class ImageWithMuteIcon extends StatelessWidget {
+  final String url;
   const ImageWithMuteIcon({
-    Key? key,
+    Key? key, required this.url,
   }) : super(key: key);
 
   @override
@@ -16,7 +17,7 @@ class ImageWithMuteIcon extends StatelessWidget {
           height: 185,
           child: Image(
             image: NetworkImage(
-                'https://www.themoviedb.org/t/p/w533_and_h300_bestv2/1V9IdXG5e9GF8kic6uVHGpTyJxa.jpg'),
+                url),
             fit: BoxFit.cover,
           ),
         ),

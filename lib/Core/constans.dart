@@ -6,3 +6,4 @@ final kheight10 = SizedBox(
 );
 
 final khomeScreenTitle = TextStyle(fontSize: 15, fontWeight: FontWeight.bold);
+const ImageAppendUrl = 'https://image.tmdb.org/t/p/w500';

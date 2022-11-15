@@ -1,12 +1,18 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
-import 'package:netflix_demo/Presentation/Search/widget/Search_Title.dart';
-import 'package:netflix_demo/Presentation/Search/widget/Search_result.dart';
+
 
 class homeMainCard extends StatelessWidget {
   final String description;
-  const homeMainCard({Key? key, required this.description}) : super(key: key);
+  final List<String> posterList;
+
+  const homeMainCard(
+      {Key? key,
+      required this.description,
+      required this.posterList,
+     })
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,10 +25,11 @@ class homeMainCard extends StatelessWidget {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: List.generate(
-                  10,
+                  posterList.length,
                   (index) => Padding(
                         padding: const EdgeInsets.all(5.0),
-                        child: MainCard1(),
+                        child: MainCard1(
+                            movieimageurl: posterList[index ]),
                       )),
             )),
       ],
@@ -31,7 +38,8 @@ class homeMainCard extends StatelessWidget {
 }
 
 class MainCard1 extends StatelessWidget {
-  const MainCard1({Key? key}) : super(key: key);
+  final String movieimageurl;
+  const MainCard1({Key? key, required this.movieimageurl}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,8 +47,8 @@ class MainCard1 extends StatelessWidget {
       height: 170,
       width: 110,
       decoration: BoxDecoration(
-          image: const DecorationImage(
-              image: NetworkImage(imageUrl2), fit: BoxFit.cover),
+          image: DecorationImage(
+              image: NetworkImage(movieimageurl), fit: BoxFit.cover),
           borderRadius: BorderRadius.circular(5)),
     );
   }
@@ -48,7 +56,9 @@ class MainCard1 extends StatelessWidget {
 
 class Number_card extends StatelessWidget {
   final int index;
-  const Number_card({Key? key, required this.index}) : super(key: key);
+  final String tvimageurl;
+  const Number_card({Key? key, required this.index, required this.tvimageurl})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +73,8 @@ class Number_card extends StatelessWidget {
               height: 170,
               width: 110,
               decoration: BoxDecoration(
-                  image: const DecorationImage(
-                      image: NetworkImage(
-                          'https://www.themoviedb.org/t/p/w220_and_h330_face/7qop80YfuO0BwJa1uXk1DXUUEwv.jpg'),
-                      fit: BoxFit.cover),
+                  image: DecorationImage(
+                      image: NetworkImage(tvimageurl), fit: BoxFit.cover),
                   borderRadius: BorderRadius.circular(5)),
             ),
           ],
@@ -87,8 +95,9 @@ class Number_card extends StatelessWidget {
 }
 
 class NmberHomecard extends StatelessWidget {
-  const NmberHomecard({
-    Key? key,
+  final List<String> posterpathlist;
+   NmberHomecard({
+    Key? key, required this.posterpathlist,
   }) : super(key: key);
 
   @override
@@ -102,10 +111,11 @@ class NmberHomecard extends StatelessWidget {
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: List.generate(
-                  10,
+                posterpathlist.length,
                   (index) => Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: Number_card(index: index + 1),
+                      padding: const EdgeInsets.all(5.0), child: 
+
+                       Number_card(index: index + 1,tvimageurl:posterpathlist[index] ),
                       )),
             )),
       ],

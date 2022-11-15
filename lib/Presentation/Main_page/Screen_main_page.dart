@@ -9,9 +9,6 @@ import 'package:netflix_demo/Presentation/Main_page/widgets/bottom_navigation.da
 import 'package:netflix_demo/Presentation/New&Hot/Screen_New&Hot.dart';
 import 'package:netflix_demo/Presentation/Search/Screen_Search.dart';
 
-
-
-
 class ScreenMainPage extends StatelessWidget {
   ScreenMainPage({Key? key}) : super(key: key);
 
@@ -25,8 +22,8 @@ class ScreenMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenwidth =MediaQuery.of(context).size.width;
-    final screenheight =MediaQuery.of(context).size.height;
+    final screenwidth = MediaQuery.of(context).size.width;
+    final screenheight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: BackgroundColor,
       body: SafeArea(

@@ -1,14 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:netflix_demo/Application/search/search_bloc.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
+import 'package:netflix_demo/Presentation/Search/widget/SearchIdleWideget.dart';
 import 'package:netflix_demo/Presentation/Search/widget/Search_Title.dart';
 
-const imageUrl2 =
-    "https://www.themoviedb.org/t/p/w220_and_h330_face/rSq6cq0LCcbro10jbEaPTEb3WmW.jpg";
-
 class SearchResult extends StatelessWidget {
-  const SearchResult({Key? key}) : super(key: key);
+  const SearchResult({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,16 +22,22 @@ class SearchResult extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        Expanded(
-            child: GridView.count(
-          shrinkWrap: true,
-          crossAxisCount: 3,
-          mainAxisSpacing: 8,
-          crossAxisSpacing: 8,
-          childAspectRatio: 1.2 / 1.9,
-          children: List.generate(20, (index) {
-            return const MainCard();
-          }),
+        Expanded(child: BlocBuilder<SearchBloc, SearchState>(
+          builder: (context, state) {
+            return GridView.count(
+              shrinkWrap: true,
+              crossAxisCount: 3,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: 1.2 / 1.9,
+              children: List.generate(20, (index) {
+                final movie = state.searchResultList[index];
+                return MainCard(
+                  imageUrl2: movie.posterimageUrl,
+                );
+              }),
+            );
+          },
         ))
       ],
     );
@@ -36,13 +45,17 @@ class SearchResult extends StatelessWidget {
 }
 
 class MainCard extends StatelessWidget {
-  const MainCard({Key? key}) : super(key: key);
+  final String imageUrl2;
+  const MainCard({
+    Key? key,
+    required this.imageUrl2,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          image:const DecorationImage(
+          image: DecorationImage(
               image: NetworkImage(imageUrl2), fit: BoxFit.cover),
           borderRadius: BorderRadius.circular(7)),
     );

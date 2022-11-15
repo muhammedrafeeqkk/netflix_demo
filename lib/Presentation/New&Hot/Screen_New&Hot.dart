@@ -1,9 +1,10 @@
-import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:netflix_demo/Application/New&Hot/newandhot_bloc.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
 import 'package:netflix_demo/Core/constans.dart';
 import 'package:netflix_demo/Presentation/Home/widgets/costumsed_button.dart';
@@ -71,10 +72,12 @@ class Screen_New_hot extends StatelessWidget {
                       )
                     ]),
               )),
-          body: TabBarView(
+          body: const TabBarView(
             children: [
-              _comingsoonwidget(context: context),
-              _everyoneswatchingwidget()
+              ComingSoonLIst(key: Key('coming soon')),
+              EveryoneWatchingList(
+                key: Key('everyone_watching'),
+              )
             ],
           ),
         ),
@@ -82,27 +85,23 @@ class Screen_New_hot extends StatelessWidget {
     );
   }
 
-  Widget _comingsoonwidget({
-    required BuildContext context,
-  }) {
-    final screenwidth = MediaQuery.of(context).size.width;
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (context, index) => ComingSoonWidget(),
-    );
-  }
+  // Widget _comingsoonwidget({
+  //   required BuildContext context,
+  // }) {
+  //   final screenwidth = MediaQuery.of(context).size.width;
+  //   return ListView.builder(
+  //     itemCount: 10,
+  //     itemBuilder: (context, index) => ComingSoonWidget(),
+  //   );
+  // }
 
-  Widget _everyoneswatchingwidget() {
-    return ListView.builder(
-      itemCount: 10,
-      itemBuilder: (context, index) => EveryonesWatching(),
-    );
-  }
 }
 
 class ImageWithMuteIcon2 extends StatelessWidget {
+  final String posterpath;
   const ImageWithMuteIcon2({
     Key? key,
+    required this.posterpath,
   }) : super(key: key);
 
   @override
@@ -113,8 +112,7 @@ class ImageWithMuteIcon2 extends StatelessWidget {
           width: double.infinity,
           height: 200,
           child: Image(
-            image: NetworkImage(
-                'https://www.themoviedb.org/t/p/w533_and_h300_bestv2/gFZriCkpJYsApPZEF3jhxL4yLzG.jpg'),
+            image: NetworkImage(posterpath),
             fit: BoxFit.cover,
           ),
         ),
@@ -132,6 +130,114 @@ class ImageWithMuteIcon2 extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class ComingSoonLIst extends StatelessWidget {
+  const ComingSoonLIst({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<NewandhotBloc>(context).add(LoadDataInComingSoon());
+    });
+    return RefreshIndicator(
+      onRefresh: () async {
+        BlocProvider.of<NewandhotBloc>(context).add(LoadDataInComingSoon());
+      },
+      child: BlocBuilder<NewandhotBloc, NewandhotState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(
+                child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ));
+          } else if (state.hasError) {
+            return const Center(
+                child: Text('Error while loading comingsoon list'));
+          } else if (state.comingSoonList.isEmpty) {
+            return const Center(child: Text('comingsoon list is empty'));
+          } else {}
+          return ListView.builder(
+              itemCount: state.comingSoonList.length,
+              itemBuilder: (context, index) {
+                final movie = state.comingSoonList[index];
+                if (movie.id == null) {
+                  return SizedBox();
+                }
+                final _date = DateTime.parse(movie.releaseDate!);
+
+                final formatedDate = DateFormat.yMMMd('en_US').format(_date);
+
+                return ComingSoonWidget(
+                  id: movie.id.toString(),
+                  month: formatedDate.split(' ').first.substring(0, 3),
+                  day: movie.releaseDate!.split('-')[1],
+                  posterPath: '$ImageAppendUrl${movie.posterPath}',
+                  movieName: movie.originalTitle ?? 'No Title',
+                  description: movie.overview ?? 'No Overview',
+                );
+              });
+        },
+      ),
+    );
+  }
+}
+
+class EveryoneWatchingList extends StatelessWidget {
+  const EveryoneWatchingList({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<NewandhotBloc>(context)
+          .add(LoadDataInEveryOneIsWatching());
+    });
+    return RefreshIndicator(
+      onRefresh: () async {
+        BlocProvider.of<NewandhotBloc>(context)
+            .add(LoadDataInEveryOneIsWatching());
+      },
+      child: BlocBuilder<NewandhotBloc, NewandhotState>(
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(
+                child: CircularProgressIndicator(
+              strokeWidth: 2,
+            ));
+          } else if (state.hasError) {
+            return const Center(
+                child: Text('Error while loading everyone watching list'));
+          } else if (state.eveyOneWatchingList.isEmpty) {
+            return const Center(
+                child: Text(' everyone watching list is empty'));
+          } else {}
+          return ListView.builder(
+              itemCount: state.eveyOneWatchingList.length,
+              itemBuilder: (context, index) {
+                final tv = state.eveyOneWatchingList[index];
+                if (tv.id == null) {
+                  return SizedBox();
+                }
+
+                return EveryonesWatching(
+                  posterPath: '$ImageAppendUrl${tv.posterPath}',
+                  SeriesName: tv.originalName ?? 'No name',
+                  description: tv.overview ?? 'No Overview',
+                );
+
+                // ComingSoonWidget(
+                //   id: movie.id.toString(),
+                //   month: formatedDate.split(' ').first.substring(0, 3),
+                //   day: movie.releaseDate!.split('-')[1],
+                //   posterPath: '$ImageAppendUrl${movie.posterPath}',
+                //   movieName: movie.originalTitle ?? 'No Title',
+                //   description: movie.overview ?? 'No Overview',
+                // );
+              });
+        },
+      ),
     );
   }
 }

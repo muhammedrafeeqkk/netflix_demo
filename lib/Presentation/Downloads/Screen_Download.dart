@@ -4,7 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:netflix_demo/Application/downloads/downloads_bloc.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
+import 'package:netflix_demo/Core/constans.dart';
 import 'package:netflix_demo/Presentation/main_widgets/appbar_widgets.dart';
 
 class Screen_Download extends StatelessWidget {
@@ -85,45 +88,53 @@ class Section3 extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  final List imageList = [
-    "https://www.themoviedb.org/t/p/w220_and_h330_face/3zXceNTtyj5FLjwQXuPvLYK5YYL.jpg",
-    "https://www.themoviedb.org/t/p/w300_and_h450_bestv2/dQrNM5Vsr9CK8o6lmofav9Dueq9.jpg",
-    "https://www.themoviedb.org/t/p/w300_and_h450_bestv2/fjaoD0ZfPOf2C5BalCziPUaf4Zk.jpg"
-  ];
-
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BlocProvider.of<DownloadsBloc>(context)
+          .add(DownloadsEvents.getDownloadsImages());
+    });
     final screenwidth = MediaQuery.of(context).size.width;
+
     return Container(
       width: screenwidth,
       height: screenwidth,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          Center(
-            child: CircleAvatar(
-              radius: screenwidth * 0.39,
-              backgroundColor: Grey.withOpacity(0.5),
-            ),
-          ),
-          DownloadImageWidget(
-            screenwidth: Size(screenwidth * 0.4, screenwidth * 0.55),
-            margin: EdgeInsets.only(left: 140, bottom: 50),
-            imageList: imageList[0],
-            angle: 20,
-          ),
-          DownloadImageWidget(
-            screenwidth: Size(screenwidth * 0.4, screenwidth * 0.55),
-            imageList: imageList[1],
-            margin: EdgeInsets.only(right: 140, bottom: 50),
-            angle: -20,
-          ),
-          DownloadImageWidget(
-            screenwidth: Size(screenwidth * 0.42, screenwidth * 0.62),
-            imageList: imageList[2],
-            margin: EdgeInsets.only(bottom: 8),
-          )
-        ],
+      child: BlocBuilder<DownloadsBloc, DownloadState>(
+        builder: (context, state) {
+          return state.isloading
+              ? const Center(child: CircularProgressIndicator())
+              : Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Center(
+                      child: CircleAvatar(
+                        radius: screenwidth * 0.39,
+                        backgroundColor: Grey.withOpacity(0.5),
+                      ),
+                    ),
+                    DownloadImageWidget(
+                      screenwidth: Size(screenwidth * 0.4, screenwidth * 0.55),
+                      margin: EdgeInsets.only(left: 140, bottom: 50),
+                      imageList:
+                          '$ImageAppendUrl${state.downloads[0].posterPath}',
+                      angle: 20,
+                    ),
+                    DownloadImageWidget(
+                      screenwidth: Size(screenwidth * 0.4, screenwidth * 0.55),
+                      imageList:
+                          '$ImageAppendUrl${state.downloads[1].posterPath}',
+                      margin: EdgeInsets.only(right: 140, bottom: 50),
+                      angle: -20,
+                    ),
+                    DownloadImageWidget(
+                      screenwidth: Size(screenwidth * 0.42, screenwidth * 0.62),
+                      imageList:
+                          '$ImageAppendUrl${state.downloads[2].posterPath}',
+                      margin: EdgeInsets.only(bottom: 8),
+                    )
+                  ],
+                );
+        },
       ),
     );
   }

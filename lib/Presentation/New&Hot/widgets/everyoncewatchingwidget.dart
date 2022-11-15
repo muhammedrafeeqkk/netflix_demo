@@ -1,25 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:netflix_demo/Core/Colors/Colors.dart';
 
 import '../../Home/widgets/costumsed_button.dart';
 import '../Screen_New&Hot.dart';
 
-Widget EveryonesWatching() {
+Widget EveryonesWatching(
+    {required String posterPath,
+    required String SeriesName,
+    required String description}) {
   return Padding(
     padding: const EdgeInsets.all(10.0),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        ImageWithMuteIcon2(),
+        ImageWithMuteIcon2(posterpath: posterPath),
         SizedBox(
           height: 10,
         ),
         Row(
           children: [
-            Text(
-              'Money Heist',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+            Expanded(
+              child: Text(
+                SeriesName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+              ),
             ),
             Spacer(),
             Padding(
@@ -55,14 +63,18 @@ Widget EveryonesWatching() {
           height: 10,
         ),
         Text(
-          'Money Heist',
+          SeriesName,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 10,
         ),
         Text(
-          'Landing the lead in the school musical is a dream come true for jodi,until the pressure sends her confidence--and her relationship--into a tailspin.',
+          description,
+          maxLines: 5,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(color: Grey),
         ),
         SizedBox(
